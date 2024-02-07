@@ -15,10 +15,12 @@ class RedactingFormatter(logging.Formatter):
     SEPARATOR = ";"
 
     def __init__(self, fields=()):
+        """ Constructor method"""
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
+        """ Filters values in incoming log records """
         log_message = super().format(record)
         for field in self.fields:
             log_message = re.sub(r'{}=.*?(?=;)'.format(field),
