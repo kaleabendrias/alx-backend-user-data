@@ -2,6 +2,8 @@
 """that returns the log message obfuscated:"""
 import re
 import logging
+import csv
+from typing import List
 
 
 class RedactingFormatter(logging.Formatter):
@@ -22,3 +24,18 @@ class RedactingFormatter(logging.Formatter):
         for field in self.fields:
             log_message = re.sub(r'{}=.*?(?=;)'.format(field), '{}={}'.format(field, self.REDACTION), log_message)
         return log_message
+
+
+def get_logger() -> logging.Logger:
+    """ Returns a logging.Logger object """
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.INFO)
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+    logger.propagate = False
+    return logger
+
+PII_FIELDS: List[str] = ['name', 'email', 'phone', 'ssn', 'credit_card']
