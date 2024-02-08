@@ -14,9 +14,7 @@ def filter_datum(fields, redaction, message, separator):
 
 
 class RedactingFormatter(logging.Formatter):
-    """ Redacting Formatter class
-        """
-
+    """ Redacting Formatter class"""
     REDACTION = "***"
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
@@ -37,7 +35,7 @@ class RedactingFormatter(logging.Formatter):
 
 
 def get_logger() -> logging.Logger:
-    """ Returns a logging.Logger object """
+    """Returns a logging.Logger object """
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
     formatter = RedactingFormatter(fields=PII_FIELDS)
@@ -47,6 +45,3 @@ def get_logger() -> logging.Logger:
     logger.addHandler(stream_handler)
     logger.propagate = False
     return logger
-
-
-PII_FIELDS: List[str] = ['name', 'email', 'phone', 'ssn', 'credit_card']
