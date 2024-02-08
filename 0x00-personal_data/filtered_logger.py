@@ -5,7 +5,11 @@ import logging
 from typing import List
 
 
-def filter_datum(fields, redaction, message, separator):
+PII_FIELDS: List[str] = ['name', 'email', 'phone', 'ssn', 'credit_card']
+
+
+def filter_datum(fields: List[str], redaction: str,
+                 message: str, separator: str) -> str:
     """helps filtering strings"""
     pattern = r'({})=(.*?)(?={})'.format(
         '|'.join(map(re.escape, fields)), re.escape(separator))
@@ -44,6 +48,3 @@ def get_logger() -> logging.Logger:
     logger.addHandler(stream_handler)
     logger.propagate = False
     return logger
-
-
-PII_FIELDS: List[str] = ['name', 'email', 'phone', 'ssn', 'credit_card']
