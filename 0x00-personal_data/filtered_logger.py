@@ -67,7 +67,6 @@ def main():
     db.close()
 
 
-
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class"""
     REDACTION = "***"
@@ -83,5 +82,6 @@ class RedactingFormatter(logging.Formatter):
         """ Filters values in incoming log records """
         log_message = super().format(record)
         for field in self.fields:
-            log_message = filter_datum([field], self.REDACTION, log_message, self.SEPARATOR)
+            log_message = filter_datum([field], self.REDACTION,
+                                       log_message, self.SEPARATOR)
         return log_message
