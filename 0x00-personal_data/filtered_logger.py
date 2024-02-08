@@ -16,6 +16,19 @@ def filter_datum(fields: List[str], redaction: str,
     return re.sub(pattern, r'\1={}'.format(redaction), message)
 
 
+def get_logger() -> logging.Logger:
+    """Returns a logging.Logger object """
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.INFO)
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+    logger.propagate = False
+    return logger
+
+
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class"""
     REDACTION = "***"
@@ -35,16 +48,3 @@ class RedactingFormatter(logging.Formatter):
                                  '{}={}'.format(field, self.REDACTION),
                                  log_message)
         return log_message
-
-
-def get_logger() -> logging.Logger:
-    """Returns a logging.Logger object """
-    logger = logging.getLogger("user_data")
-    logger.setLevel(logging.INFO)
-    formatter = RedactingFormatter(fields=PII_FIELDS)
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.INFO)
-    stream_handler.setFormatter(formatter)
-    logger.addHandler(stream_handler)
-    logger.propagate = False
-    return logger
