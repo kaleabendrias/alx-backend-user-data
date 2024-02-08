@@ -48,6 +48,25 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     return db
 
 
+def main():
+    """obtains database connection using get_db & retrieve rows in users"""
+    logger = get_logger()
+
+    # Get database connection
+    db = get_db()
+    cursor = db.cursor()
+
+    # Retrieve all rows from the users table
+    cursor.execute("SELECT * FROM users")
+    for row in cursor:
+        filtered_row = {k: "***" if k in PII_FIELDS else v for k, v in zip(cursor.column_names, row)}
+        logger.info(str(filtered_row))
+
+    cursor.close()
+    db.close()
+
+
+
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class"""
     REDACTION = "***"
