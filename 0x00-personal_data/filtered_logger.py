@@ -7,7 +7,7 @@ from typing import List
 
 
 def filter_datum(fields, redaction, message, separator):
-    """filtering strings"""
+    """helps filtering strings"""
     pattern = r'({})=(.*?)(?={})'.format(
         '|'.join(map(re.escape, fields)), re.escape(separator))
     return re.sub(pattern, r'\1={}'.format(redaction), message)
