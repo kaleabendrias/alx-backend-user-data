@@ -2,7 +2,6 @@
 """that returns the log message obfuscated:"""
 import re
 import logging
-import csv
 from typing import List
 
 
