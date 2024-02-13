@@ -2,6 +2,7 @@
 """the class Auth"""
 from flask import request
 from typing import List, TypeVar
+import fnmatch
 
 
 class Auth:
@@ -14,6 +15,9 @@ class Auth:
             return True
         if path in excluded_paths or path + '/' in excluded_paths:
             return False
+        for excluded_path in excluded_paths:
+            if fnmatch.fnmatch(path, excluded_path.rstrip('*')):
+                return False
         return True
 
     def authorization_header(self, request=None) -> str:
