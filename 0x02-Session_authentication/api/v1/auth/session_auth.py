@@ -7,7 +7,7 @@ import uuid
 class SessionAuth(Auth):
     """class SessionAuth"""
     user_id_by_session_id = {}
-    
+
     def __init__(self) -> None:
         """init method"""
         super().__init__()
