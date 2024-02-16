@@ -26,10 +26,6 @@ class SessionDBAuth(SessionExpAuth):
         user_session = UserSession.search({'session_id': session_id})
         if not user_session:
             return None
-        expiry_time = user_session.created_at + timedelta(
-            seconds=self.session_duration)
-        if expiry_time < datetime.utcnow():
-            return None
 
         return user_session[0].user_id
 
