@@ -9,14 +9,20 @@ class SessionDBAuth(SessionExpAuth):
     """new authentication class"""
     def create_session(self, user_id=None):
         """creates and stores new instance of UserSession"""
-        session_id = super().create_session(user_id)
-        if not session_id:
+        try:
+            session_id = super().create_session(user_id)
+        except Exception:
             return None
-        user_session = UserSession({"user_id": user_id,
-                                    "session_id": session_id})
-        user_session.save()
-        user_session.save_to_file()
-        return session_id
+
+        if type(session_id) is str:
+            kwargs = {
+                "user_id": user_id,
+                "session_id": session_id
+            }
+            user_session = UserSession(**kwargs)
+            user_session.save()
+
+            return session_id
 
     def user_id_for_session_id(self, session_id=None):
         """returns the User ID by requesting UserSession"""
