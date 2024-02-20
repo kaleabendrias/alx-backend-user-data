@@ -44,13 +44,15 @@ def login():
 
 @app.route('/sessions', methods=['DELETE'])
 def logout():
-    """Handle a DELETE request to log out a user."""
+    """Find the user with the requested session ID.
+    If the user exists destroy the session and redirect
+    the user to GET /"""
     session_id = request.cookies.get("session_id")
     user = AUTH.get_user_from_session_id(session_id)
-    if not user:
-        abort(403)
-    AUTH.destroy_session(user.id)
-    redirect(url_for("home"))
+    if user:
+        AUTH.destroy_session(user.id)
+        redirect(url_for('home'))
+    abort(403)
 
 
 if __name__ == "__main__":
