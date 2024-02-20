@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Basic flask app"""
-from flask import Flask, jsonify, request, abort, redirect, url_for, Response
+from flask import Flask, jsonify, request, abort, redirect, url_for
 from auth import Auth
 
 
@@ -44,15 +44,13 @@ def login():
 
 @app.route('/sessions', methods=['DELETE'])
 def logout():
-    """Find the user with the requested session ID.
-    If the user exists destroy the session and redirect
-    the user to GET /"""
+    """Handle a DELETE request to log out a user."""
     session_id = request.cookies.get("session_id")
     user = AUTH.get_user_from_session_id(session_id)
-    if user:
-        AUTH.destroy_session(user.id)
-        redirect(url_for('home'))
-    return Response(status=403)
+    if not user:
+        abort(403)
+    AUTH.destroy_session(user.id)
+    redirect(url_for("welcome"))
 
 
 if __name__ == "__main__":
