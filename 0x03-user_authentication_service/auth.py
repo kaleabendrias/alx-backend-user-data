@@ -40,16 +40,13 @@ class Auth:
         """validates login"""
         try:
             user = self._db.find_user_by(email=email)
+            if user:
+                password = bytes(password, "utf-8")
+                if bcrypt.checkpw(password, user.hashed_password):
+                    return True
+                return False
         except NoResultFound:
             return False
-
-        user_password = user.hashed_password
-        encoded_password = password.encode()
-
-        if bcrypt.checkpw(encoded_password, user_password):
-            return True
-
-        return False
 
     def create_session(self, email: str) -> str:
         """find the user corresponding to the email,
@@ -57,13 +54,14 @@ class Auth:
         as the user’s session_id,"""
         try:
             user = self._db.find_user_by(email=email)
-            if user:
-                session_id = _generate_uuid()
-                self._db.update_user(user.id, session_id=session_id)
-                return session_id
         except NoResultFound:
             return None
-        return None
+
+        session_id = _generate_uuid()
+
+        self._db.update_user(user.id, session_id=session_id)
+
+        return session_id
 
     def get_user_from_session_id(self, session_id: str) -> User:
         """returns the corresponding User or None."""
