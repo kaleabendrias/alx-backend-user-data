@@ -72,6 +72,7 @@ def profile():
         return jsonify({"email": user.email}), 200
     abort(403)
 
+
 @app.route('/reset_password', methods=['POST'])
 def reset_password() -> str:
     """respond POST /reset_password route."""
