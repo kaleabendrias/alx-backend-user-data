@@ -42,25 +42,24 @@ class DB:
 
     def find_user_by(self, **kwargs: Dict[str, str]) -> User:
         """ returns the first row found in the users"""
-        if not kwargs:
-            raise InvalidRequestError
-
-        column_names = User.__table__.columns.keys()
-        for key in kwargs.keys():
-            if key not in column_names:
-                raise InvalidRequestError
-
-        user = self._session.query(User).filter_by(**kwargs).first()
-
-        if user is None:
-            raise NoResultFound
-
+        try:
+            user = self._session.query(User).filter_by(**kwargs).one()
+        except NoResultFound:
+            raise NoResultFound()
+        except InvalidRequestError:
+            raise InvalidRequestError()
         return user
 
     def update_user(self, user_id: int, **kwargs: Dict[str, str]):
         """argument a required user_id and arbitrary"""
         user = self.find_user_by(id=user_id)
+
+        column_names = User.__table__.columns.keys()
+        for key in kwargs.keys():
+            if key not in column_names:
+                raise ValueError
+
         for key, value in kwargs.items():
-            if not hasattr(User, key):
-                raise ValueError()
             setattr(user, key, value)
+
+        self._session.commit()
