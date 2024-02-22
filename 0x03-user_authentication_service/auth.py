@@ -64,19 +64,22 @@ class Auth:
 
     def get_user_from_session_id(self, session_id: str) -> User:
         """returns the corresponding User or None."""
-        if session_id is None:
-            return None
-
         try:
             user = self._db.find_user_by(session_id=session_id)
-        except NoResultFound:
+            return user
+        except (NoResultFound, InvalidRequestError) as e:
             return None
-
-        return user
 
     def destroy_session(self, user_id: int):
         """updates the corresponding user’s session ID to None"""
-        self._db.update_user(user_id, session_id=None)
+        try:
+            user = self._db.find_user_by(id=user_id)
+        except NoResultFound:
+            return None
+
+        self._db.update_user(user.id, session_id=None)
+
+        return None
 
     def get_reset_password_token(self, email: str) -> str:
         """"It take an email string argument and returns a string"""
